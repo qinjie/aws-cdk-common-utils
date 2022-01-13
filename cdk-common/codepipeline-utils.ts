@@ -10,6 +10,7 @@ import { Construct } from "@aws-cdk/core";
 /*
 Functions which creates Action for CodePipeline
 */
+
 export const createCodeCommitSourceAction = (
   scope: Construct,
   output: codepipeline.Artifact,
@@ -35,19 +36,21 @@ export const createCodeCommitSourceAction = (
 
 export const createGithubSourceAction = (
   output: codepipeline.Artifact,
-  props: {
-    code_repo_name: string;
-    code_repo_branch: string;
-    code_repo_owner?: string;
-    code_repo_secret_var?: string;
+  code_repo_props: {
+    name: string;
+    branch: string;
+    owner?: string;
+    secret_var?: string;
   }
 ): codepipeline_actions.GitHubSourceAction => {
   const githubAction = new codepipeline_actions.GitHubSourceAction({
     actionName: "Github_Source",
-    repo: props.code_repo_name,
-    branch: props.code_repo_branch,
-    owner: props.code_repo_owner!,
-    oauthToken: cdk.SecretValue.secretsManager(props.code_repo_secret_var!),
+    repo: code_repo_props.code_repo_name,
+    branch: code_repo_props.code_repo_branch,
+    owner: code_repo_props.code_repo_owner!,
+    oauthToken: cdk.SecretValue.secretsManager(
+      code_repo_props.code_repo_secret_var!
+    ),
     output: output,
   });
   return githubAction;
